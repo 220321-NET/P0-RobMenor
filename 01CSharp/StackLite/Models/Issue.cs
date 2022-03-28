@@ -19,6 +19,10 @@ private string title;
         }
     }
 
+    public bool IsClosed { get; set; }
+
+    public List<Answers> Answers { get; set; }
+
     public override string ToString()
     {
         return $"Title: {title} \nContent: {content} \nDate Created: {DateCreated} \nScore: {Score}";
