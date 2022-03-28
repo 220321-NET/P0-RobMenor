@@ -17,7 +17,7 @@ public class MainMenu
             Console.WriteLine("What would you like to do today?");
             Console.WriteLine("[1] Submit a question");
             Console.WriteLine("[2] View all questions");
-            Console.WriteLine("[3] Select an issue");
+            Console.WriteLine("[3] Search for an issue");
             Console.WriteLine("[x] Exit");
 
             string? input = Console.ReadLine();
@@ -33,7 +33,7 @@ public class MainMenu
                 break;
 
                 case "3":
-                    SelectIssue();
+                    SearchIssue();
                 break;
 
                 case "x":
@@ -85,7 +85,7 @@ public class MainMenu
         }
     }
 
-    private Issue SelectIssue()
+    private Issue? SelectIssue()
     {
         Console.WriteLine("Select an issue");
         {
@@ -97,7 +97,7 @@ public class MainMenu
                 return null;
             }
 
-            SelectIssue:
+            selectIssue:
             for(int i = 0; i < allIssues.Count; i++)
             {
                 Console.WriteLine($"[{i}] {allIssues[i]}");
@@ -112,10 +112,23 @@ public class MainMenu
             else
             {
                 Console.WriteLine("Please enter valid input");
-                goto SelectIssue;
+                goto selectIssue;
             }
-
-
         }
     }
+
+        private List<Issue> SearchIssue()
+        {
+            Console.WriteLine("Enter keywords to search");
+            string? input = Console.ReadLine()!.ToLower();
+
+            List<Issue> allIssues = new SLBL().GetIssue();
+            List<Issue> foundIssues = allIssues.FindAll(issue => issue.Title.ToLower().Contains(input) || issue.Content.Contains(input));
+
+            foreach(Issue issue in foundIssues)
+            {
+                Console.WriteLine(issue);
+            }
+            return foundIssues;
+        }
 }
