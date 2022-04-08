@@ -1,12 +1,15 @@
 using System.Text.Json;
-using Models;
 
 namespace DL;
 
-public class FileRepository
+public class FileRepository : IRepository
 {
     private readonly string filePath = "../DL/StackLite.json";
 
+    /// <summary>
+    /// Gets all inventories from stacklite.json
+    /// </summary>
+    /// <returns>list of items, if none, returns empty list</returns>
     public List<Inventory> GetInventories()
     {
         string jsonString = "";
@@ -39,6 +42,10 @@ public class FileRepository
         return items;
     }
 
+/// <summary>
+/// inserts a new json request object to stacklite.json
+/// </summary>
+/// <param name="requestToCreate">a request object to be inserted</param>
     public void CreateRequest(Inventory requestToCreate)
     {
         if(requestToCreate == null) throw new ArgumentNullException();
@@ -48,5 +55,15 @@ public class FileRepository
 
         string jsonString = JsonSerializer.Serialize(allItems);
         File.WriteAllText(filePath, jsonString);
+    }
+
+    public void UpdateRequest(Inventory requestToUpdate)
+    {
+        if(requestToUpdate == null) throw new ArgumentNullException();
+        List<Inventory> allItems = GetInventories();
+
+        Inventory foundItem = allItems.FirstOrDefault(g => g.GameSystem == requestToUpdate.GameSystem && g.Title == requestToUpdate.Title);
+
+        foundItem.Quantity = requestToUpdate.Quantity;
     }
 }

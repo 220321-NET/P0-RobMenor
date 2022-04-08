@@ -1,17 +1,22 @@
-﻿using Models;
-using DL;
+﻿using DL;
 
 namespace BL;
-public class RRGBL
+public class RRGBL : IRobsBL
 {
+
+    private readonly IRepository _repo;
+    public RRGBL(IRepository repo)
+    {
+        _repo = repo;
+    }
     public void CreateRequest(Inventory requestToCreate)
     {
-        new FileRepository().CreateRequest(requestToCreate);
+        _repo.CreateRequest(requestToCreate);
     }
 
     public List<Inventory> GetInventory()
     {
-        return new FileRepository().GetInventories();
+        return _repo.GetInventories();
     }
 
     public void SoldOut(Inventory markAsSold)

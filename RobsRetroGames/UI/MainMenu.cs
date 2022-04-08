@@ -6,6 +6,13 @@ namespace UI;
 
 public class MainMenu
 {
+
+    private readonly IRobsBL _bl;
+
+    public MainMenu(IRobsBL bl)
+    {
+        _bl = bl;
+    }
     public void Start()
     {
         Main:
@@ -118,17 +125,33 @@ public class MainMenu
             goto RequestGame;
         }
 
-        new RRGBL().CreateRequest(GameRequest);
+        _bl.CreateRequest(GameRequest);
     }
 
     private void DisplayAllItems()
     {
+        List<Inventory> allItems = _bl.GetInventory();
         Console.WriteLine("Your Cart");
-        List<Inventory> allItems = new RRGBL().GetInventory();
 
         AddGame:
         foreach(Inventory itemToDisplay in allItems)
         {
+            for(int i = 0; i < allItems.Count; i++)
+        {
+            Console.WriteLine($"[{i}] {allItems[i]}");
+        }
+
+        int selection;
+        if(Int32.TryParse(Console.ReadLine(), out selection) && (selection >= 0 && selection < allItems.Count))
+        {
+            return;
+        }
+        else
+        {
+            Console.WriteLine("Enter valid input");
+            goto AddGame;
+        }
+
             Console.WriteLine("[A]dd game to cart or [R]emove game from cart. [P]ass on game or [E]xit");
 
             string resp = Console.ReadLine().Trim().ToUpper();
@@ -173,7 +196,7 @@ public class MainMenu
     private Inventory? SelectItem()
     {
         Console.WriteLine("Select an item");
-        List<Inventory> allItems = new RRGBL().GetInventory();
+        List<Inventory> allItems = _bl.GetInventory();
 
         if(allItems.Count == 0)
         {
@@ -204,7 +227,7 @@ public class MainMenu
         Console.WriteLine("Enter title of game");
         string input = Console.ReadLine()!.ToLower();
 
-        List<Inventory> allItems = new RRGBL().GetInventory();
+        List<Inventory> allItems = _bl.GetInventory();
         List<Inventory> foundItems = allItems.FindAll(item => item.Title.ToLower().Contains(input) || item.GameSystem.Contains(input));
 
         foreach(Inventory item in foundItems)
@@ -280,6 +303,6 @@ public class MainMenu
 
         Console.WriteLine($"{x.Title} is now out of stock");
 
-        new RRGBL().SoldOut(x);
+        _bl.SoldOut(x);
     }
 }
